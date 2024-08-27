@@ -33,5 +33,11 @@
   "bugs": {
     "url": "https://github.com/Gowtham-Mani-24/node-fsdb61wde/issues"
   },
-  "homepage": "https://github.com/Gowtham-Mani-24/node-fsdb61wde#readme"
+  "homepage": "https://github.com/Gowtham-Mani-24/node-fsdb61wde#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
