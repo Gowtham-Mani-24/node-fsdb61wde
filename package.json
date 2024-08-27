@@ -1,0 +1,37 @@
+{
+  "name": "fsdb61wde",
+  "version": "1.0.0",
+  "description": "a backend repo for the course FSD61WDE.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gowtham-Mani-24/node-fsdb61wde.git"
+  },
+  "keywords": [
+    "backend",
+    "nodejs",
+    "expressJS",
+    "mongoDB",
+    "PostMan",
+    "VScode",
+    "IDE",
+    "Axios",
+    "body-parser",
+    "cookie-parser",
+    "morgan",
+    "env",
+    "jsonWebToken",
+    "middleware",
+    "logger"
+  ],
+  "author": "gmanivel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gowtham-Mani-24/node-fsdb61wde/issues"
+  },
+  "homepage": "https://github.com/Gowtham-Mani-24/node-fsdb61wde#readme"
+}
