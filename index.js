@@ -5,7 +5,7 @@ const server = http.createServer((request,response) => {
 
   if (url === '/'){
     if (method === 'GET') {
-        return response.end('Get Junga');
+        return response.end('Get  hello Junga');
       }
       else if (method === 'POST'){
         return response.end('Post Junga');
