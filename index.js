@@ -1,23 +1,24 @@
-const http = require('http');
+// import express module
+const express = require('express');
 
-const server = http.createServer((request,response) => {
-  const {url, method} = request;
+//create an express application
+const app = express();
 
-  if (url === '/'){
-    if (method === 'GET') {
-        return response.end('Get  hello Junga');
-      }
-      else if (method === 'POST'){
-        return response.end('Post Junga');
-      }
-  } else if(url === '/test'){
-    return response.end('This is a test Page')
-  }
-  else {
-    return response.end('Paage not found');
-  }
+//define th routes and their correspoding functions
+app.get('/', (req,res) => {
+  res.send("GET World");
 });
 
-server.listen(3001,'localhost', () => {
-    console.log('Server is running in http://localhost:3001')
+app.post('/', (req,res) => {
+  res.send("POST World");
+});
+
+app.get('/test', (req,res) => {
+  res.send("GET Test");
+});
+
+
+//start the server by listening on the port for incoming requests
+app.listen(3001,"localhost",()=> {
+  console.log("Server is running on http://localhost:3001");
 });
