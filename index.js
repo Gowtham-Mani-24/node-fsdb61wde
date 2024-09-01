@@ -83,6 +83,6 @@ app.get('/readPaste', (req,res) =>{
 
 
 //start the server by listening on the port for incoming requests
-app.listen(3001,"localhost",()=> {
+app.listen(3001, ()=> {
   console.log("Server is running on http://localhost:3001");
   });
