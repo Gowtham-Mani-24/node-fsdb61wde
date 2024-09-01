@@ -4,83 +4,56 @@ const express = require('express');
 //create an express application
 const app = express();
 
-//import files system
-const fs = require('fs');
+const companies = [
+  {
+    id:1,
+    name:"Google",
+    location:"Mountain View,California",
+    email:"careers@google.com",
+    phone:"650-253-0000",
+    website:"https://careers.google.com",
+    createdAt:"2021-09-01T00:00:00Z",
+    updatedAt:"2021-09-01T00:00:00Z"
+  },
+  {
+    id:2,
+    name:"Facebook",
+    location:"Menlo Park, California",
+    email:"careers@facebook.com",
+    phone:"650-453-0000",
+    website:"https://careers.facebook.com",
+    createdAt:"2021-09-01T00:00:00Z",
+    updatedAt:"2021-09-01T00:00:00Z"
+  },
+  {
+    id:3,
+    name:"Amazon",
+    location:"Seattle,Washington",
+    email:"careers@google.com",
+    phone:"950-953-0000",
+    website:"https://careers.amazon.com",
+    createdAt:"2021-09-01T00:00:00Z",
+    updatedAt:"2021-09-01T00:00:00Z"
+  }
+];
 
-//define the routes and their correspoding functions
-app.get('/', (req,res) => {
-  fs.stat('./Files/test.txt', (err, stats) => {
-    if(err){
-      res.send(err)
-    }
-    else{
-      res.json({
-        size: stats.size, //size of file
-        isFile: stats.isFile(), //is it file
-        isDirectory: stats.isDirectory(), //is it folder
-        isSymbolicLink: stats.isSymbolicLink() //ist it shorcut
+//use the express middleware to parse JSON bodies
+app.use(express.json()) ;
 
-      });
-    }
-  })
-});
-
-//post request
-app.post('/create',(req,res) =>{
-  fs.writeFile('./Files/newFile.txt','Hello Junga', (err) =>{
-    if(err){
-      res.send(err);
-    }
-    else{
-      res.send('file created successfully');
-    }
-  })
+app.get('/companies',(req,res) =>{
+  res.json(companies);
 })
 
-//to read the contents in a file
-app.get('/read',(req,res) => {
-  fs.readFile('./Files/test.txt', 'utf8', (err,data) =>{
-    if(err){
-      res.send(err);
-    }
-    else{
-      res.send(data);
-    }
-  }) //UTF8 - encoding scheme
-});
+app.post('/companies', (req,res) =>{
+  // console.log(req.body);
+  const company = req.body;
 
-
-//to copy file from one file to another using copy file
-app.get('/copy', (req,res) => {
-  fs.copyFile('./Files/fileA.txt', './Files/fileB.txt', (err) =>{
-    if(err){
-      res.send(err);
-    }
-    else{
-      res.send('file A copied to B');
-    }
-  })
+  company.id = companies[companies.length - 1].id + 1 // to post the new company after at the end
+  company.createdAt = new Date().toISOString();
+  company.updatedAt = new Date().toISOString();
+  companies.push(company);
+  res.json({message:"company created successfully"});
 })
-
-// read content from one file and paste on another file
-app.get('/readPaste', (req,res) =>{
-  fs.readFile('./Files/fileC.txt', 'utf8', (err,data) =>{
-    if(err){
-      res.send(err)
-    }
-    else{
-      fs.writeFile('./Files/fileD.txt', data,(err) =>{
-        if(err){
-          res.send(err);
-        }
-        else{
-          res.send('File C read and Pasted in file D');
-        }
-      })
-    }
-  })
-})
-
 
 //start the server by listening on the port for incoming requests
 app.listen(3001, ()=> {
