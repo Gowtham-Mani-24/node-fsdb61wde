@@ -4,7 +4,7 @@ const express = require('express');
 //create an express application
 const app = express();
 
-const companies = [
+let companies = [
   {
     id:1,
     name:"Google",
@@ -44,6 +44,21 @@ app.get('/companies',(req,res) =>{
   res.json(companies);
 })
 
+//to use URL parameter
+app.get('/companies/:id' ,(req,res) =>{
+ // console.log(req.params.id);
+ const id = parseInt(req.params.id); //converting to integer value
+ const company = companies.find(comp => comp.id === id);
+ if(!company){
+  res,json({message:'company not found'})
+ }
+ else{
+  res.json(company);
+ }
+  res.json({message:`Company details by ${req.params.id}`})
+})
+
+
 app.post('/companies', (req,res) =>{
   // console.log(req.body);
   const company = req.body;
@@ -53,6 +68,23 @@ app.post('/companies', (req,res) =>{
   company.updatedAt = new Date().toISOString();
   companies.push(company);
   res.json({message:"company created successfully"});
+})
+
+//updating a company name using put request
+app.put('/companies/:id', (req,res) => {
+  const id = parseInt(req.params.id);
+  const { name }= req.body;
+  const company = companies.find(com => com.id ===id);
+  company.name = name;
+  companies = companies.map(com => com.id === id ? company : com);
+  res.json({message:"company updated successfully"});
+})
+
+//deleting a company using delete request
+app.delete('/companies/:id', (req,res) => {
+  const id = parseInt(req.params.id);
+  companies = companies.filter(com => com.id !== id);//to filter the remaining companies, so that only given company deleted
+  res.json({message:'company deleted successfully'});
 })
 
 //start the server by listening on the port for incoming requests
