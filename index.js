@@ -44,6 +44,34 @@ app.get('/companies',(req,res) =>{
   res.json(companies);
 })
 
+app.get('/companies/search', (req,res) =>{
+  const  { id, name, location }  = req.query; //{id} this is descruturing
+  // console.log(id);
+  let company;
+
+  
+  if(id){
+    company = companies.find(com => com.id === parseInt(id));
+  }
+  else if(name){
+    company = companies.find (com => com.name.toLowerCase() === name.toLowerCase());
+  }
+  else if(location){
+    company = companies.find (com => com.location.toLowerCase() === location.toLowerCase());
+  }
+  else if(location && name){
+    company = companies.find (com => com.name.toLowerCase() === name.toLowerCase());
+    company = companies.find (com => com.location.toLowerCase() === location.toLowerCase());
+  }
+
+  if (!company){
+    res.json({message:'company not found'});
+  }
+  else {
+    res.json(company);
+  }
+})
+
 //to use URL parameter
 app.get('/companies/:id' ,(req,res) =>{
  // console.log(req.params.id);
