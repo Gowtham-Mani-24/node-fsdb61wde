@@ -4,116 +4,165 @@ const express = require('express');
 //create an express application
 const app = express();
 
-let companies = [
+let customer = [
   {
     id:1,
-    name:"Google",
-    location:"Mountain View,California",
-    email:"careers@google.com",
-    phone:"650-253-0000",
-    website:"https://careers.google.com",
-    createdAt:"2021-09-01T00:00:00Z",
-    updatedAt:"2021-09-01T00:00:00Z"
+    name:"Leo Dass",
+    phone:"650-253-0000"
   },
   {
     id:2,
-    name:"Facebook",
-    location:"Menlo Park, California",
-    email:"careers@facebook.com",
-    phone:"650-453-0000",
-    website:"https://careers.facebook.com",
-    createdAt:"2021-09-01T00:00:00Z",
-    updatedAt:"2021-09-01T00:00:00Z"
+    name:"Antony Dass",
+    phone:"450-253-0000"
   },
   {
     id:3,
-    name:"Amazon",
-    location:"Seattle,Washington",
-    email:"careers@google.com",
-    phone:"950-953-0000",
-    website:"https://careers.amazon.com",
-    createdAt:"2021-09-01T00:00:00Z",
-    updatedAt:"2021-09-01T00:00:00Z"
+    name:"Harold Dass",
+    phone:"850-253-0000"
   }
 ];
+
+let rooms = [
+  {
+    id:1,
+    name:"Pent House",
+    seats:700,
+    amenities:["SuiteRoom","tabletennis","balcony","campfire"],
+    roomId:1001
+  },
+  {
+    id:2,
+    name:"Deluxe Room",
+    seats:150,
+    amenities:["DoubleBed","balcony","campfire"],
+    roomId:1002
+  },
+  {
+    id:3,
+    name:"Connecting Room",
+    seats:700,
+    amenities:["Standard"],
+    roomId:1003
+  }
+]
+
+let bookings = [
+  {
+    roomId:1001,
+    customerId:1,
+    booked:true,
+    date:"2024-09-20",
+    startTime:"10.00",
+    endtime:"15.00"
+  },
+  {
+    roomId:1002,
+    customerId:2,
+    booked:true,
+    date:"2024-09-20",
+    startTime:"09.00",
+    endtime:"12.00"
+  },
+  {
+    roomId:1003,
+    customerId:3,
+    booked:false,
+    date:null,
+    startTime:null,
+    endtime:null
+  }
+]
 
 //use the express middleware to parse JSON bodies
 app.use(express.json()) ;
 
-app.get('/companies',(req,res) =>{
-  res.json(companies);
+//list all customers with booked data
+app.get('/customer',(req,res) =>{
+  let customerBookings = bookings.map(booking => {
+    let cust = customer.find(cust => cust.id === booking.customerId) || {};
+    let room = rooms.find(room => room.roomId=== bookings.roomId) || {};
+
+    return {
+      customerName: cust.name || "N/A",
+      roomName: room.name || "N/A",
+      date: booking.date || "N/A",
+      startTime : booking.startTime || "N/A",
+      endTime: booking.endtime || "N/A"
+    }
+  })
+  res.json(customerBookings);
 })
 
-app.get('/companies/search', (req,res) =>{
-  const  { id, name, location }  = req.query; //{id} this is descruturing
-  // console.log(id);
-  let company;
-
-  
-  if(id){
-    company = companies.find(com => com.id === parseInt(id));
-  }
-  else if(name){
-    company = companies.find (com => com.name.toLowerCase() === name.toLowerCase());
-  }
-  else if(location){
-    company = companies.find (com => com.location.toLowerCase() === location.toLowerCase());
-  }
-  else if(location && name){
-    company = companies.find (com => com.name.toLowerCase() === name.toLowerCase());
-    company = companies.find (com => com.location.toLowerCase() === location.toLowerCase());
-  }
-
-  if (!company){
-    res.json({message:'company not found'});
-  }
-  else {
-    res.json(company);
-  }
+//get all rooms
+app.get('/rooms',(req,res) =>{
+  res.json(rooms);
 })
 
-//to use URL parameter
-app.get('/companies/:id' ,(req,res) =>{
- // console.log(req.params.id);
- const id = parseInt(req.params.id); //converting to integer value
- const company = companies.find(comp => comp.id === id);
- if(!company){
-  res,json({message:'company not found'})
- }
- else{
-  res.json(company);
- }
-  res.json({message:`Company details by ${req.params.id}`})
+//Creating room
+app.post('/rooms',(req,res) =>{
+  let room = req.body;
+  room.id = rooms[rooms.length -1].id + 1;
+  room.seats = 100;
+  room.price = 500;
+  room.amenities = "";
+  rooms.push(room);
+  res.json({message:"rooms created successfully"});
 })
 
-
-app.post('/companies', (req,res) =>{
-  // console.log(req.body);
-  const company = req.body;
-
-  company.id = companies[companies.length - 1].id + 1 // to post the new company after at the end
-  company.createdAt = new Date().toISOString();
-  company.updatedAt = new Date().toISOString();
-  companies.push(company);
-  res.json({message:"company created successfully"});
+//deleting a room using url parameter
+app.delete('/rooms/:id',(req,res) =>{
+  let id = parseInt(req.params.id);
+  rooms = rooms.filter( roo => roo.id !== id);
+  res.json({message:"rooms deleted successfully"})
 })
 
-//updating a company name using put request
-app.put('/companies/:id', (req,res) => {
-  const id = parseInt(req.params.id);
-  const { name }= req.body;
-  const company = companies.find(com => com.id ===id);
-  company.name = name;
-  companies = companies.map(com => com.id === id ? company : com);
-  res.json({message:"company updated successfully"});
+//list all rooms with booked data
+app.get('/bookings',(req,res) =>{
+  let bookingDetails = rooms.map(room =>{
+    let booking = bookings.find( book => book.roomId === room.roomId) || {};
+    let cust = customer.find(cust => cust.id ===booking.customerId) || {};
+
+    return {
+      roomName:room.name,
+      customerName: customer.name,
+      bookedStatus:booking.booked ? "Booked" : "Available",
+      date: booking.date || "N/A",
+      satrtTime: booking.startTime || "N/A",
+      endTime: booking.endTime || "N/A"
+    };
+  });
+  res.json(bookingDetails);
 })
 
-//deleting a company using delete request
-app.delete('/companies/:id', (req,res) => {
-  const id = parseInt(req.params.id);
-  companies = companies.filter(com => com.id !== id);//to filter the remaining companies, so that only given company deleted
-  res.json({message:'company deleted successfully'});
+app.get("/noofbookings",(req,res) =>{
+  let nofBookings = bookings.map( (booking,index) => {
+    let cust = customer.find(cust => cust.id === booking.customerId) || {};
+    let room = rooms.find(room => room.roomId === booking.roomId) || {};
+
+    return {
+      customerName: cust.name,
+      roomName: room.name,
+      date: booking.date,
+      startTime: booking.startTime,
+      endTime: booking.endtime,
+      bookiId: index +1,
+      bookingDate: booking.date,
+      bookingStatus: booking.booked ? "Booked" : "Available"
+    }
+  })
+
+  let customerBookingCount = customer.map(cust => {
+    let bookingsForCustomer = nofBookings.filter(b => b.customerName === cust.name);
+    return {
+      customerName: cust.name,
+      totalBookings: bookingsForCustomer.length, 
+      bookings: bookingsForCustomer 
+    };
+  });
+
+  res.json(customerBookingCount);
 })
+
 
 //start the server by listening on the port for incoming requests
 app.listen(3001, ()=> {
