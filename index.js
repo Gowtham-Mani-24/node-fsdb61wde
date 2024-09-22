@@ -1,6 +1,18 @@
 // import express module
 const express = require('express');
 
+//import mongoose module
+const mongoose = require('mongoose');
+
+//connect to mongodb database
+mongoose.connect(`mongodb+srv://workspaceofgowtham:8IACWDJR4efrmajR@cluster0.s3fqn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
+.then(() => {
+  console.log("connected to MongoDb successfully")
+})
+.catch((err)=> {
+  console.log("error connecting MongoDb database",err)
+});
+
 //create an express application
 const app = express();
 
