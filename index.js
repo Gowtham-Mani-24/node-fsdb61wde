@@ -1,6 +1,21 @@
 // import express module
 const express = require('express');
 
+//import mongoose module
+const mongoose = require('mongoose');
+
+//connect to mongodb database
+mongoose.connect(`process.env.MONGODB_URI`)
+.then(() => {
+  console.log("connected to MongoDb successfully")
+})
+.catch((err)=> {
+  console.log("error connecting MongoDb database",err)
+});
+
+//import dotenv module
+require('dotenv').config();
+
 //create an express application
 const app = express();
 
