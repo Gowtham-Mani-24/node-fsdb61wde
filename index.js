@@ -1,13 +1,14 @@
-//import dotenv module
-require('dotenv').config();
+
 
 const app = require('./app');
 
 //import mongoose module
 const mongoose = require('mongoose');
+//import MONGODB_URI from config.js
+const { MONGODB_URI } = require('./utils/config');
 
 //connect to mongodb database
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log("connected to MongoDb successfully")
     //start the server by listening on the port for incoming requests
